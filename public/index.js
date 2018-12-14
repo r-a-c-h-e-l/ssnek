@@ -2,6 +2,8 @@ import { nextSnakeState, initialSnakeState as snake } from './Snek.js';
 import { calcX, calcY, initialBoardState as board } from './Board.js';
 import { newFood as food } from './Food.js';
 
+let intervalId;
+let stopDraw;
 const width = window.innerWidth;
 const height = window.innerHeight;
 const initialSnake = snake();
@@ -27,11 +29,34 @@ const initializeCanvas = ({ width, height}) => {
   ctx = canvas.getContext('2d');
 }
 
+function drawCrash() {
+  // clear canvas
+  ctx.fillStyle = '#2c3e50'
+  ctx.fillRect(0, 0, state.board.width, state.board.height)
+
+  const x = state.board.width / 2 - 50
+  const y = (state.board.height / 2 - 50)
+  ctx.fillStyle = '#2ecc71'
+  ctx.fillRect(x, y, 100, 100)
+
+  // left eye
+  ctx.beginPath()
+  ctx.moveTo(x + 25, y + 25)
+  ctx.lineTo(x+ 35, y + 25)
+  ctx.stroke()
+  // left eye
+  ctx.beginPath()
+  ctx.moveTo(x + 75, y + 25)
+  ctx.lineTo(x+ 85, y + 25)
+  ctx.stroke()
+  // mouf
+  ctx.beginPath()
+  ctx.moveTo(x + 25, y + 75)
+  ctx.lineTo(x+ 85, y + 55)
+  ctx.stroke()
+}
 
 function draw() {
-  // clear board
-  // draw food
-  // draw snake
   // clear
   const cell = state.snake.cellsize;
 
@@ -59,16 +84,12 @@ function nextDraw() {
     food: nextSnake.snake.full ? food({ width, height }) : state.food,
   }
   console.log({ nextState: state });
-  draw();
-}
-
-const tick = t1 => t2 => {
-  if (t2 - t1 > 100) {
-    nextDraw()
-    window.requestAnimationFrame(tick(t2))
-  } else {
-    window.requestAnimationFrame(tick(t1))
+  if (!nextSnake.snake.body.length) {
+    stopDraw();
+    drawCrash();
+    return;
   }
+  draw();
 }
 
 window.addEventListener('keydown', (e) => {
@@ -102,7 +123,7 @@ window.addEventListener('keydown', (e) => {
 });
 initializeCanvas({ width, height })
 draw();
-// window.requestAnimationFrame(tick(0))
-// let intervalId;
-// intervalId = window.setInterval(nextDraw, 100);
-// window.stopDraw = () => window.clearInterval(intervalId)
+intervalId = window.setInterval(nextDraw, 100);
+stopDraw = () => window.clearInterval(intervalId)
+window.stopDraw = stopDraw;
+window.drawCrash = drawCrash;

@@ -38,6 +38,29 @@ const willLoop = ({ snake, directions, board }) => {
   return { x, y };
 }
 
+// willCrash: takes { snake } = state
+const willCrash = ({ snake, directions, board }) => {
+  const head = newHead({ snake, directions, board })
+  let isCannibalizing = false;
+  console.log({ snake });
+  for (let i = 1; i < snake.body.length; i++) {
+    console.log(snake.body[i]);
+    const segment = snake.body[i]
+    const xRange = {
+      min: segment.x,
+      max: segment.x + snake.cellsize,
+    }
+    const yRange = {
+      min: segment.y,
+      max: segment.y + snake.cellsize,
+    }
+    const xInRange = head.x >= xRange.min && head.x <= xRange.max;
+    const yInRange = head.y >= yRange.min && head.y <= yRange.max;
+    if (xInRange && yInRange) isCannibalizing = true;
+  }
+  return isCannibalizing;
+}
+
 const newHead = ({ snake, directions, board }) => {
   const currentDirection = directions[0];
   const { x, y } = willLoop({ snake, directions, board })
@@ -79,6 +102,9 @@ const growSnake = ({ snake, directions, board }) => {
 }
 
 const nextSnakeState = ({ snake, food, directions, board }) => {
+    if (willCrash({ snake, directions, board })) {
+      return { snake: { ...snake, body: [] }, directions: [] }
+    }
     if (willEat({ snake, food})) {
       return growSnake({ snake, directions, board })
     } else {
@@ -86,23 +112,23 @@ const nextSnakeState = ({ snake, food, directions, board }) => {
     }
 }
 
-const initSnake = ({head, units, cellsize}) => {
-  const body = [head];
-  let currentX = head.x;
+const initSnake = ({bottom, units, cellsize}) => {
+  const body = [bottom];
+  let currentX = bottom.x;
   for (let i = 1; i < units; i++) {
-    body.push({ x: currentX + cellsize, y: head.y });
+    body.unshift({ x: currentX + cellsize, y: bottom.y });
     currentX = body[i].x;
   }
   return body;
 }
 
 const initialSnakeState = (startingPoint) => {
-  const head = startingPoint || { x: 2, y: 2 };
+  const bottom = startingPoint || { x: 2, y: 2 };
   const cellsize = 25 // make this a constant;
   return {
     cellsize,
     full: false,
-    body: initSnake({ head, cellsize, units: 2 })
+    body: initSnake({ bottom, cellsize, units: 2 })
   }
 }
 
