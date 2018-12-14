@@ -6,7 +6,18 @@ const cardinals = {
 }
 
 const willEat = ({ snake, food }) => {
- return snake.body[0].x === food.x && snake.body[0].y === food.y
+  const foodBuffer = 25;
+  const xRange = {
+    min: food.x - foodBuffer,
+    max: food.x + snake.cellsize + foodBuffer,
+  }
+  const yRange = {
+    min: food.y - foodBuffer,
+    max: food.y + snake.cellsize + foodBuffer,
+  }
+  const xInRange = snake.body[0].x >= xRange.min && snake.body[0].x <= xRange.max;
+  const yInRange = snake.body[0].y >= yRange.min && snake.body[0].y <= yRange.max;
+  return xInRange && yInRange;
 }
 
 const newHead = ({ snake, directions }) => {
@@ -29,11 +40,11 @@ const newHead = ({ snake, directions }) => {
 const moveSnake = ({ snake, directions }) => {
  const head = newHead({ snake, directions })
  const newDirection = directions.length > 1 ? directions.slice(1, directions.length) : directions;
- console.log({ directions, newDirection});
  return {
    snake: {
      ...snake,
      body: [head].concat(snake.body).slice(0, snake.body.length),
+     full: false,
    },
    directions: directions.length > 1 ? directions.slice(1, directions.length) : directions,
  }
@@ -44,10 +55,10 @@ const growSnake = ({ snake, directions }) => {
  return {
    snake: {
      ...snake,
-     body: [head].concat[snake],
+     body: [head].concat(snake.body),
      full: true,
    },
-   directions: directions.length > 1 ? directions.slice(0) : directions,
+   directions: directions.length > 1 ? directions.slice(1, directions.length) : directions,
  }
 }
 
