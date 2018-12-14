@@ -5,8 +5,10 @@ const cardinals = {
   'WEST': { x: -1, y: 0 },
 }
 
+// willEat: takes { snake, food } = state
+// returns true if x, y of snake[0] is within range around food
 const willEat = ({ snake, food }) => {
-  const foodBuffer = 25;
+  const foodBuffer = 15;
   const xRange = {
     min: food.x - foodBuffer,
     max: food.x + snake.cellsize + foodBuffer,
@@ -20,25 +22,39 @@ const willEat = ({ snake, food }) => {
   return xInRange && yInRange;
 }
 
-const newHead = ({ snake, directions }) => {
+// willLoop: takes { snake, directions, board } = state
+// loops in the positive direction
+const willLoop = ({ snake, directions, board }) => {
   const currentDirection = directions[0];
   const coords = cardinals[currentDirection];
-  const x = snake.body[0].x + coords.x;
-  const y = snake.body[0].y + coords.y
+  let x = snake.body[0].x + coords.x;
+  let y = snake.body[0].y + coords.y
+  const xBounds = { min: 0, max: board.width }
+  const yBounds = { min: 0, max: board.height }
+  if (x <= xBounds.min) x = xBounds.max;
+  if (x >= xBounds.max) x = xBounds.min;
+  if (y <= yBounds.min) y = yBounds.max;
+  if (y >= xBounds.max) y = yBounds.min;
+  return { x, y };
+}
+
+const newHead = ({ snake, directions, board }) => {
+  const currentDirection = directions[0];
+  const { x, y } = willLoop({ snake, directions, board })
   switch(currentDirection) {
     case 'NORTH':
-      return { x , y: y - snake.cellsize };
+    return { x , y: y - snake.cellsize };
     case 'EAST':
-      return { x: x + snake.cellsize, y }
+    return { x: x + snake.cellsize, y }
     case 'SOUTH':
-      return { x, y: y + snake.cellsize }
+    return { x, y: y + snake.cellsize }
     case 'WEST':
-      return { x: x - snake.cellsize, y }
+    return { x: x - snake.cellsize, y }
   }
 }
 
-const moveSnake = ({ snake, directions }) => {
- const head = newHead({ snake, directions })
+const moveSnake = ({ snake, directions, board }) => {
+ const head = newHead({ snake, directions, board })
  const newDirection = directions.length > 1 ? directions.slice(1, directions.length) : directions;
  return {
    snake: {
@@ -50,8 +66,8 @@ const moveSnake = ({ snake, directions }) => {
  }
 }
 
-const growSnake = ({ snake, directions }) => {
- const head = newHead({ snake, directions })
+const growSnake = ({ snake, directions, board }) => {
+ const head = newHead({ snake, directions, board })
  return {
    snake: {
      ...snake,
@@ -62,11 +78,11 @@ const growSnake = ({ snake, directions }) => {
  }
 }
 
-const nextSnakeState = ({ snake, food, directions }) => {
+const nextSnakeState = ({ snake, food, directions, board }) => {
     if (willEat({ snake, food})) {
-      return growSnake({ snake, directions })
+      return growSnake({ snake, directions, board })
     } else {
-      return moveSnake({ snake, directions })
+      return moveSnake({ snake, directions, board })
     }
 }
 

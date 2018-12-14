@@ -38,15 +38,16 @@ function draw() {
   ctx.fillStyle = '#2c3e50'
   ctx.fillRect(0, 0, state.board.width, state.board.height)
 
+  // draw food
+  ctx.fillStyle = '#e74c3c'
+  ctx.fillRect(state.food.x, state.food.y, cell, cell)
+
   // draw snake
   ctx.fillStyle = '#2ecc71'
   state.snake.body.forEach(p => {
     ctx.fillRect(p.x, p.y, cell, cell)
   })
 
-  // draw food
-  ctx.fillStyle = '#e74c3c'
-  ctx.fillRect(state.food.x, state.food.y, cell, cell)
 }
 
 function nextDraw() {

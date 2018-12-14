@@ -45,6 +45,7 @@
 // initializeBoard
 // findX = ({state}) => x
 // findY = ({state}) => y
+// mapPointTogrid = ({ state }) => x, y mapped to column and row.
 
 // Food owns the following state:
 // food = {x, y}
