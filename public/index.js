@@ -36,11 +36,11 @@ function draw() {
   // draw food
   // draw snake
   // clear
-  ctx.fillStyle = '#232323'
+  ctx.fillStyle = '#2c3e50'
   ctx.fillRect(0, 0, state.board.width, state.board.height)
 
   // draw snake
-  ctx.fillStyle = 'rgb(0,200,50)'
+  ctx.fillStyle = '#2ecc71'
   state.snake.body.forEach(p => {
     ctx.fillRect(p.x, p.y, state.snake.cellsize, state.snake.cellsize)
   })
