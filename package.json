@@ -1,0 +1,23 @@
+{
+  "name": "ssnake",
+  "version": "1.0.0",
+  "description": ":snake:",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r-a-c-h-e-l/ssnake.git"
+  },
+  "author": "rhazes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r-a-c-h-e-l/ssnake/issues"
+  },
+  "homepage": "https://github.com/r-a-c-h-e-l/ssnake#readme",
+  "devDependencies": {
+    "express": "^4.16.4"
+  }
+}

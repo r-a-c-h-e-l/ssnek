@@ -1,0 +1,6 @@
+
+const initialFoodState = () => {
+  return {
+    
+  }
+}
