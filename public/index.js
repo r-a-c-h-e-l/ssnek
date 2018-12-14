@@ -54,6 +54,10 @@ function drawCrash() {
   ctx.moveTo(x + 25, y + 75)
   ctx.lineTo(x+ 85, y + 55)
   ctx.stroke()
+
+  ctx.font = '16px sans';
+  ctx.fillStyle = '#e74c3c'
+  ctx.fillText('hit refresh to start over!', x - 25 , y + 140);
 }
 
 function draw() {
@@ -126,4 +130,3 @@ draw();
 intervalId = window.setInterval(nextDraw, 100);
 stopDraw = () => window.clearInterval(intervalId)
 window.stopDraw = stopDraw;
-window.drawCrash = drawCrash;
